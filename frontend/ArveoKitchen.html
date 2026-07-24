@@ -18,23 +18,34 @@
 const { useState, useMemo, useEffect } = React;
 
 // ---- Backend API integration -------------------------------------------
-// All forms POST to this Express + MySQL backend. Change API_BASE if the
-// backend is deployed somewhere other than localhost:5000.
-const API_BASE = "http://localhost:5000/api";
+// All forms POST to this Express + MySQL backend. Automatically falls back
+// to Railway production API when deployed on Vercel/non-localhost.
+const API_BASE =
+  window.API_BASE ||
+  (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+    ? "http://localhost:5000/api"
+    : "https://arveo-kitchenn-production.up.railway.app/api");
 
 async function postJSON(endpoint, payload) {
-  const res = await fetch(`${API_BASE}${endpoint}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  let data = null;
-  try { data = await res.json(); } catch (e) { /* non-JSON response */ }
-  if (!res.ok || !data || data.success === false) {
-    const message = (data && data.message) || "Unable to process your request. Please try again.";
-    throw new Error(message);
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    let data = null;
+    try { data = await res.json(); } catch (e) { /* non-JSON response */ }
+    if (!res.ok || !data || data.success === false) {
+      const message = (data && data.message) || "Unable to process your request. Please try again.";
+      throw new Error(message);
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "TypeError" || err.message === "Failed to fetch") {
+      throw new Error("Unable to connect to backend service. Please ensure the backend server is active.");
+    }
+    throw err;
   }
-  return data;
 }
 
 function makeIcon(glyph) {
@@ -1286,12 +1297,29 @@ function FeedbackPage() {
           </select>
         </label>
         <label>Your Rating
-          <div className="av-star-select">
+          <div className="av-star-select" style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginTop: "0.2rem" }}>
             {[1, 2, 3, 4, 5].map((n) => (
-              <button type="button" key={n} className="av-star-btn" onClick={() => setForm({ ...form, rating: n })}>
-                <Star size={24} fill={form.rating >= n ? "#C89B3C" : "none"} stroke="#C89B3C" />
+              <button
+                type="button"
+                key={n}
+                className="av-star-btn"
+                onClick={() => setForm({ ...form, rating: n })}
+                style={{
+                  background: "none",
+                  border: "none",
+                  padding: "2px",
+                  cursor: "pointer",
+                  transition: "transform 0.15s ease",
+                  transform: form.rating === n ? "scale(1.2)" : "scale(1)"
+                }}
+                title={`${n} Star${n > 1 ? "s" : ""}`}
+              >
+                <Star size={28} color={form.rating >= n ? "#C89B3C" : "#D1D5DB"} />
               </button>
             ))}
+            <span style={{ marginLeft: "8px", fontSize: "0.9rem", color: "#C89B3C", fontWeight: "600" }}>
+              {form.rating} / 5
+            </span>
           </div>
         </label>
         <label>Your Message<textarea required value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} /></label>
