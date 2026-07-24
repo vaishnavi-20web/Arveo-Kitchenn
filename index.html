@@ -141,13 +141,39 @@ const MENU = [
   { id: 20, name: "Cold Coffee", cat: "Beverages", tags: ["Veg"], price: 89, rating: 4.3, desc: "Chilled coffee blended with milk & a hint of chocolate.", wiki: "Iced coffee", emoji: "☕" },
 ];
 
-const GALLERY_TOPICS = {
-  "Interior": ["Restaurant", "Fine dining", "Dining room", "Cafe"],
-  "Signature Foods": ["Biryani", "Butter chicken", "Masala dosa", "Gulab jamun"],
-  "Party Hall": ["Banquet hall", "Wedding reception", "Event management", "Ballroom"],
-  "Birthday": ["Birthday cake", "Birthday party", "Party favor", "Balloon"],
-  "Corporate": ["Conference", "Business meeting", "Seminar", "Office"],
-  "Family": ["Family", "Family reunion", "Dinner", "Picnic"],
+// Curated Unsplash photo IDs — always relevant, no API key needed.
+// Format: https://images.unsplash.com/photo-{id}?w=400&h=400&fit=crop
+const GALLERY_IMAGES = {
+  "Interior": [
+    "1414235077428-338989a2e8c0","1517248135467-4c7edcad34c4","1559329007-bf1929bd36b9",
+    "1424847651672-bf20a4b0982b","1537047702592-08c504f2aa3a","1466637574441-749b8f19452f",
+    "1555396273-367ea4eb4db5","1564844536308-de5e0e68b23d"
+  ],
+  "Signature Foods": [
+    "1631515243349-e0cb75fb8d3a","1596797038530-2c107229654b","1567188040759-fb8a883dc6d8",
+    "1610057099431-d73a1c9d2f2f","1574484284002-952d92456975","1589301760014-8a5d3f4cf07f",
+    "1606491956391-6a0fe38e04f5","1606851091851-e8f2a5e2b6e1"
+  ],
+  "Party Hall": [
+    "1464366400600-7168b8af9bc3","1519225421980-9c7f3b2d14a8","1530103862676-de8c9debad1d",
+    "1511795409834-ef04bbd61622","1472653816316-3ad6f10a6592","1524178232363-1fb2b075b655",
+    "1478145787956-f8a9f2d0f8de","1507003211169-0a1dd7228f2d"
+  ],
+  "Birthday": [
+    "1558618666-fcd25c85cd64","1464347744102-11db6282f854","1578985545062-70f8f4e8c86a",
+    "1542826438-bd32f438d207","1621303837174-89787a7cd00e","1612203985729-70726954388c",
+    "1486427944299-d1955d23e34d","1518049362265-d5b2a6467637"
+  ],
+  "Corporate": [
+    "1517245386807-bb43f82c33c4","1515187029135-18ee286d815b","1531482615713-2afd69097998",
+    "1524178232363-1fb2b075b655","1556761175-b413da4baf72","1542744173-8e7e53415bb0",
+    "1509610588489-2bd0ecebb7ef","1560523159-4a9692e38ead"
+  ],
+  "Family": [
+    "1536640712-4d4c36ff0e4e","1565299624946-b28f40a0ae38","1547592166-23ac45744acd",
+    "1528605248644-14dd04022da1","1504674900247-0877df9cc836","1559847844-5315695dadae",
+    "1567620905732-2d1ec7ab7445","1540189549336-e7d17f5f02e3"
+  ],
 };
 
 const CATEGORIES = ["South Indian", "North Indian", "Chinese", "Fast Food", "Desserts", "Beverages"];
@@ -1121,12 +1147,12 @@ function CakeBookingPage() {
 
 /* ---------------- Gallery ---------------- */
 
-function GalleryTile({ topic, label }) {
+function GalleryTile({ photoId, label }) {
   const [failed, setFailed] = useState(false);
-  const src = useWikiImage(topic);
-  if (src && !failed) {
+  const src = `https://images.unsplash.com/photo-${photoId}?w=420&h=420&fit=crop&auto=format`;
+  if (!failed) {
     return (
-      <div className="av-gallery-tile av-gallery-photo">
+      <div className="av-gallery-tile av-gallery-photo" title={label}>
         <img src={src} alt={label} loading="lazy" onError={() => setFailed(true)} />
       </div>
     );
@@ -1141,7 +1167,7 @@ function GalleryTile({ topic, label }) {
 
 function GalleryPage() {
   const [tab, setTab] = useState(GALLERY_TABS[0]);
-  const topics = GALLERY_TOPICS[tab];
+  const images = GALLERY_IMAGES[tab];
   return (
     <section className="av-section av-ivory av-page-top">
       <SectionEyebrow>MOMENTS AT ARVÉO</SectionEyebrow>
@@ -1153,11 +1179,10 @@ function GalleryPage() {
         ))}
       </div>
       <div className="av-gallery-grid">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <GalleryTile key={tab + i} topic={topics[i % topics.length]} label={`${tab} #${i + 1}`} />
+        {images.map((photoId, i) => (
+          <GalleryTile key={tab + photoId} photoId={photoId} label={`${tab} ${i + 1}`} />
         ))}
       </div>
-      <p className="av-note">Reference photography shown per category — swap in your own restaurant's photos anytime.</p>
     </section>
   );
 }
