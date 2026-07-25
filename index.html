@@ -369,7 +369,7 @@ function FloatingButtons({ setPage }) {
       <a href="tel:+917897654356" className="av-float-btn" title="Call Now">
         <Phone size={20} />
       </a>
-      <button onClick={() => setPage && setPage("contact")} className="av-float-btn" title="Contact Us" style={{ border: 'none', cursor: 'pointer' }}>
+      <button onClick={() => setPage && setPage("enquiry")} className="av-float-btn" title="Contact Us" style={{ border: 'none', cursor: 'pointer' }}>
         <Mail size={20} />
       </button>
     </div>
@@ -1357,7 +1357,7 @@ function FeedbackPage() {
 
 /* ---------------- Contact ---------------- */
 
-function ContactPage() {
+function ContactPage({ setPage }) {
   const lat = 12.967586, lng = 77.590208;
   return (
     <section className="av-section av-ivory av-page-top">
@@ -1366,13 +1366,13 @@ function ContactPage() {
       <Divider />
       <div className="av-contact-grid">
         <div className="av-card av-contact-card">
-          <p><Phone size={16} /> <a href="tel:+917897654356" className="av-plain-link">7897654356</a></p>
-          <p><Mail size={16} /> <a href="mailto:xxyyzz@gmail.com" className="av-plain-link">xxyyzz@gmail.com</a></p>
-          <p><InstagramIcon size={18} /> <a href="https://instagram.com/arveo.__" target="_blank" rel="noreferrer" className="av-plain-link">arveo.__</a></p>
+          <p><Phone size={16} /> <a href="tel:+917897654356" className="av-plain-link" style={{ textDecoration: 'none' }}>7897654356</a></p>
+          <p><Mail size={16} /> <a onClick={() => setPage && setPage("enquiry")} className="av-plain-link" style={{ textDecoration: 'none', cursor: 'pointer' }}>xxyyzz@gmail.com</a></p>
+          <p><InstagramIcon size={18} /> <a href="https://instagram.com/arveo.__" target="_blank" rel="noreferrer" className="av-plain-link" style={{ textDecoration: 'none' }}>arveo.__</a></p>
           <div className="av-hero-actions" style={{ marginTop: "1rem" }}>
             <a className="av-btn-gold" href="https://wa.me/917897654356" target="_blank" rel="noreferrer">Chat on WhatsApp</a>
             <a className="av-btn-outline" href="tel:+917897654356">Call Now</a>
-            <a className="av-btn-outline" href="mailto:xxyyzz@gmail.com">Email Us</a>
+            <button className="av-btn-outline" onClick={() => setPage && setPage("enquiry")}>Email Us</button>
             <a className="av-btn-outline" href={`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`} target="_blank" rel="noreferrer">Get Directions</a>
           </div>
         </div>
@@ -1452,7 +1452,7 @@ function App() {
     gallery: <GalleryPage />,
     enquiry: <EnquiryPage />,
     feedback: <FeedbackPage />,
-    contact: <ContactPage />,
+    contact: <ContactPage setPage={setPage} />,
   };
 
   return (
