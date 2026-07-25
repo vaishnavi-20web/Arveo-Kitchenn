@@ -1149,7 +1149,7 @@ function CakeBookingPage() {
 
 function GalleryTile({ photoId, label }) {
   const [failed, setFailed] = useState(false);
-  const src = `https://images.unsplash.com/photo-${photoId}?w=420&h=420&fit=crop&auto=format`;
+  const src = `https://images.unsplash.com/photo-${photoId}?w=420&h=420&fit=crop&auto=format&ixlib=rb-4.0.3`;
   if (!failed) {
     return (
       <div className="av-gallery-tile av-gallery-photo" title={label}>
