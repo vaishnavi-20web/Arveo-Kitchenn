@@ -360,7 +360,7 @@ function Navbar({ page, setPage, cartCount }) {
 
 /* ---------------- Floating contact buttons ---------------- */
 
-function FloatingButtons() {
+function FloatingButtons({ setPage }) {
   return (
     <div className="av-floating">
       <a href="https://wa.me/917897654356" target="_blank" rel="noreferrer" className="av-float-btn av-float-wa" title="Chat on WhatsApp">
@@ -369,9 +369,9 @@ function FloatingButtons() {
       <a href="tel:+917897654356" className="av-float-btn" title="Call Now">
         <Phone size={20} />
       </a>
-      <a href="mailto:xxyyzz@gmail.com" className="av-float-btn" title="Email Us">
+      <button onClick={() => setPage && setPage("contact")} className="av-float-btn" title="Contact Us" style={{ border: 'none', cursor: 'pointer' }}>
         <Mail size={20} />
-      </a>
+      </button>
     </div>
   );
 }
@@ -1669,7 +1669,7 @@ function App() {
       <Toast message={toast} />
       {pages[page]}
       <Footer setPage={setPage} />
-      <FloatingButtons />
+      <FloatingButtons setPage={setPage} />
     </div>
   );
 }
