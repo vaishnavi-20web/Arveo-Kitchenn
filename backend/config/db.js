@@ -28,7 +28,13 @@ if (dbUrl) {
     connectionLimit: 10,
     queueLimit: 0,
     dateStrings: true,
-    connectTimeout: 10000,
+    connectTimeout: 20000,
+    // Enable SSL for all non-localhost connections (required by Railway's
+    // public MySQL proxy at *.rlwy.net). rejectUnauthorized:false accepts
+    // Railway's self-signed certificate.
+    ssl: (host && host !== "localhost" && host !== "127.0.0.1")
+      ? { rejectUnauthorized: false }
+      : undefined,
   };
 }
 
